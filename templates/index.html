@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Tarea 1 - IA {% endblock %}</h1>
+    <div class="row">
+        <div class="col-md-2">
+            <form method="post">
+                <div class="form-group">
+                    <label for="n_nodes">Numero de Nodos</label>
+                    <input type="number" name="n_nodes"
+                           placeholder="0" class="form-control"
+                           value="{{ request.form['n_nodes'] }}"></input>
+                </div>
+
+                <div class="form-group">
+                    <label for="n_arcs">Numero de Arcos Extras</label>
+                    <input type="number" name="n_arcs"
+                           placeholder="0" class="form-control"
+                           value="{{ request.form['n_arcs'] }}"></input>
+                </div>
+                <div class="form-group">
+                    <label for="max_arc_cost">Costo Maximo de Arista</label>
+                    <input type="number" name="max_arc_cost"
+                           placeholder="0" class="form-control"
+                           value="{{ request.form['max_arc_cost'] }}"></input>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-10">
+            {% if datos %}
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Algoritmo</th>
+                      <th scope="col">Tiempo de  Busqueda</th>
+                      <th scope="col">Espacio de busqueda</th>
+                        <th scope="col">Costo de Ruta</th>
+                        <th scope="col">Optimo?</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                        {% for dato in datos %}
+                           <th scope="row">{{loop.index}}</th>
+                          <td>Las Vegas</td>
+                          <td>{{dato["time"]}} seg</td>
+                          <td>{{ dato["cant_nodos_visitados"] }}</td>
+                            <td>{{ dato["costo_ruta"] }}</td>
+                            <td>No</td>
+                        {% endfor %}
+                    </tr>
+                  </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+    <hr>
+
+{% endblock %}
