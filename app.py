@@ -18,7 +18,10 @@ def index():
         n_nodes = request.form['n_nodes']
         n_arcs = request.form['n_arcs']
         max_arc_cost  = request.form['max_arc_cost']
-        nodo_inicial = generateGraph(int(n_nodes), int(n_arcs), int(max_arc_cost))
+        if n_arcs:
+            nodo_inicial = generateGraph(int(n_nodes), int(n_arcs), int(max_arc_cost))
+        else:
+            nodo_inicial = genereteGrafoConexo(int(n_nodes), int(max_arc_cost))
         contador = []
         nodos_camino = []
         start = time.time()
@@ -196,11 +199,11 @@ def printGraphMatrix(nodoInicial):
     while n_queue:
         actual_node = n_queue.pop(0)
         visitedNodes.append(actual_node)
-        matrix[actual_node.nombre] = []
+        matrix[actual_node.nombre] = {}
         for arista in actual_node.aristas:
             if arista.nodo2 not in visitedNodes:
                 n_queue.append(arista.nodo2)
-            matrix[actual_node.nombre].append(arista.nodo2.nombre)
+            matrix[actual_node.nombre][arista.nodo2.nombre] = arista.costo
     return matrix
 
 
@@ -215,29 +218,29 @@ def calculateRouteCost(camino):
     #         costo += arc.costo
     return costo
 
-N = 20
+# N = 20
 # nodo_inicial = generateGraph(N, 10, max_cost=10)
-nodo_inicial = genereteGrafoConexo(N, max_cost=10)
+# # nodo_inicial = genereteGrafoConexo(N, max_cost=10)
 # print(printGraphMatrix(nodo_inicial))
 
-start = time.time()
-contador = []
-nodosCamin = []
-datos = vegasTSP(nodo_inicial, [], nodo_inicial, N, contador, nodosCamin)
-datosv2 = datos.copy()
-printList(datosv2)
-print()
-print(calculateRouteCost(datosv2))
-datos = optimizacion2optIterator(nodo_inicial, datos)
-printList(datos)
-print()
-datos.pop(len(datos)-1)
-print(calculateRouteCost(datos))
-# print(len(contador))
-# print(nodosCamin)
-end = time.time()
-print()
-print(end - start)
+# start = time.time()
+# contador = []
+# nodosCamin = []
+# datos = vegasTSP(nodo_inicial, [], nodo_inicial, N, contador, nodosCamin)
+# datosv2 = datos.copy()
+# printList(datosv2)
+# print()
+# print(calculateRouteCost(datosv2))
+# datos = optimizacion2optIterator(nodo_inicial, datos)
+# printList(datos)
+# print()
+# datos.pop(len(datos)-1)
+# print(calculateRouteCost(datos))
+# # print(len(contador))
+# # print(nodosCamin)
+# end = time.time()
+# print()
+# print(end - start)
 
 
 
