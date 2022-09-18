@@ -98,6 +98,11 @@ def avaroTSP(nodo_actual, n_visitados, nodo_inicial, N, co, ruta):
     froteras_visitadas = []
     co.append(1)
     tree_node_number = len(co)
+
+    def getCost(e):
+        return e.costo
+    nodo_actual.aristas.sort(key=getCost)
+
     for ar in nodo_actual.aristas:
         if (ar.nodo2 not in nodos_visitados or ar.nodo2 == nodo_inicial) and ar.nodo2 != nodo_actual:
             fronteras.append(ar.nodo2)
@@ -165,13 +170,8 @@ def generateGraph(size, aristas, max_cost):
                 if arist.nodo2.nombre == str(n_gen2):
                     rtry = True
         nodos[n_gen1].aristas.append(arista(nodos[n_gen1], nodos[n_gen2], costo))
-        nodos[n_gen2].aristas.append(arista(nodos[n_gen2], nodos[n_gen1], costo))
+        nodos[n_gen2].aristas.append(arista(nodos[n_gen2], nodos[n_gen1], costo))   
 
-    #ORDER ARISTAS
-    def getCostAndEntrophy(e):
-        return e.costo
-    for i in range(size):
-        nodos[i].aristas.sort(key=getCostAndEntrophy)     
 
     return nodos[0]
 
