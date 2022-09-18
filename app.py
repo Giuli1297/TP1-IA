@@ -6,6 +6,8 @@ import asyncio
 import sys, math
 from flask import Flask, render_template, request
 
+from algorithms.backtracking import tsp_backtracking
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your secret key'
 
@@ -15,16 +17,26 @@ def index():
     if request.method == 'GET':
         return render_template('index.html', time=False)
     elif request.method == 'POST':
+        algorithm = request.form['algorithm']
+        print(algorithm)
         n_nodes = request.form['n_nodes']
         n_arcs = request.form['n_arcs']
         max_arc_cost  = request.form['max_arc_cost']
         nodo_inicial = generateGraph(int(n_nodes), int(n_arcs), int(max_arc_cost))
-        contador = []
-        nodos_camino = []
-        start = time.time()
-        datos = vegasTSP(nodo_inicial, [], nodo_inicial, int(n_nodes), contador, nodos_camino)
-        end = time.time()
-        costoruta = calculateRouteCost(datos)
+
+        if algorithm == 'backtracking':
+            start = time.time()
+            solucion = tsp_backtracking(getAdyacencyAsList(nodo_inicial))
+            end = time.time()
+            costoruta = solucion['costo']
+            contador = 10
+        elif algorithm == 'las_vegas':
+            contador = []
+            nodos_camino = []
+            start = time.time()
+            datos = vegasTSP(nodo_inicial, [], nodo_inicial, int(n_nodes), contador, nodos_camino)
+            end = time.time()
+            costoruta = calculateRouteCost(datos)
         return render_template('index.html',
                                datos=[{"time": end-start,
                                       "cant_nodos_visitados": len(contador),
@@ -146,6 +158,14 @@ def printGraphMatrix(nodoInicial):
                 n_queue.append(arista.nodo2)
             matrix[actual_node.nombre].append(arista.nodo2.nombre)
     return matrix
+
+def getAdyacencyAsList(nodoInicial):
+    matrix = printGraphMatrix(nodoInicial)
+    matriz_adyacencia = []
+    for row in matrix.values():
+        transformed_row = map(lambda x: int(x), row)
+        matriz_adyacencia.append(list(transformed_row))
+    return matriz_adyacencia
 
 
 def calculateRouteCost(camino):
