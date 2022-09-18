@@ -29,11 +29,11 @@ def index():
             nodo_inicial = genereteGrafoConexo(int(n_nodes), int(max_arc_cost))
 
         if algorithm == 'backtracking':
+            contador = []
             start = time.time()
-            solucion = tsp_backtracking(getAdyacencyAsList(nodo_inicial))
+            solucion = tsp_backtracking(getAdyacencyAsList(nodo_inicial), contador)
             end = time.time()
             costoruta = solucion['costo']
-            contador = []
             optimo = 'Si'
         elif algorithm == 'las_vegas':
             contador = []
