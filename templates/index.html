@@ -43,16 +43,18 @@
                     </tr>
                   </thead>
                   <tbody>
+                  {% for dato in datos %}
                     <tr>
-                        {% for dato in datos %}
+
                            <th scope="row">{{loop.index}}</th>
-                          <td>Las Vegas</td>
+                          <td>{{dato["algoritmo"]}}</td>
                           <td>{{dato["time"]}} seg</td>
                           <td>{{ dato["cant_nodos_visitados"] }}</td>
                             <td>{{ dato["costo_ruta"] }}</td>
                             <td>No</td>
-                        {% endfor %}
+
                     </tr>
+                  {% endfor %}
                   </tbody>
                 </table>
             {% endif %}
