@@ -225,13 +225,13 @@ def printGraphMatrix(nodoInicial):
 
 def getAdyacencyAsList(nodoInicial):
     matrix = printGraphMatrix(nodoInicial)
+    n = len(matrix)
     matriz_adyacencia = []
-    index = 0
     for row in matrix.values():
-        transformed_row = list(map(lambda x: int(x), row.values()))
-        transformed_row.insert(index, index)
+        transformed_row = [0 for x in range(n)]
+        for key, value in row.items():
+            transformed_row[int(key)] = int(value)
         matriz_adyacencia.append(transformed_row)
-        index += 1
     return matriz_adyacencia
 
 
