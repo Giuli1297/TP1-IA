@@ -28,23 +28,43 @@ def index():
         nodos_camino = []
         start = time.time()
         datosVegas = vegasTSP(nodo_inicial, [], nodo_inicial, int(n_nodes), contadorVegas, nodos_camino)
+        datosVegas.append(nodo_inicial)
         end = time.time()
         tiempoVegas = end-start
+
         contadorAvaro = []
         start = time.time()
         datosAvaro = avaroTSP(nodo_inicial, [], nodo_inicial, int(n_nodes), contadorAvaro, nodos_camino)
+        datosAvaro.append(nodo_inicial)
         end = time.time()
         tiempoAvaro = end - start
+
+        contadorAvaro2otp = []
+        start = time.time()
+        datosAvaro2otp = optimizacion2optIterator(
+            nodo_inicial,
+            avaroTSP(nodo_inicial, [], nodo_inicial, int(n_nodes), contadorAvaro2otp, nodos_camino)
+        )
+        end = time.time()
+        tiempoAvaro2otp = end - start
+
         costorutaVegas = calculateRouteCost(datosVegas)
         costorutaAvaro = calculateRouteCost(datosAvaro)
+        costorutaAvaro2otp = calculateRouteCost(datosAvaro2otp)
         return render_template('index.html',
                                datos=[{"time": tiempoVegas,
                                       "cant_nodos_visitados": len(contadorVegas),
                                        "costo_ruta": costorutaVegas,
-                                       "algoritmo":"Las Vegas"},{"time": tiempoAvaro,
+                                       "algoritmo":"Las Vegas"},
+                                      {"time": tiempoAvaro,
                                       "cant_nodos_visitados": len(contadorAvaro),
-                                       "costo_ruta": costorutaAvaro,
-                                                                 "algoritmo": "Avaro"}])
+                                        "costo_ruta": costorutaAvaro,
+                                        "algoritmo": "Avaro"},
+                                      {"time": tiempoAvaro2otp,
+                                       "cant_nodos_visitados": len(contadorAvaro2otp),
+                                       "costo_ruta": costorutaAvaro2otp,
+                                       "algoritmo": "Avaro2otp"}
+                                      ])
 
 
 class nodo:
@@ -109,7 +129,7 @@ def avaroTSP(nodo_actual, n_visitados, nodo_inicial, N, co, ruta):
     tree_node_number = len(co)
 
     def getCost(e):
-        return e.costo
+        return e.costo+distanciaRecta(nodo_inicial, e.nodo2)
     nodo_actual.aristas.sort(key=getCost)
 
     for ar in nodo_actual.aristas:
@@ -119,14 +139,6 @@ def avaroTSP(nodo_actual, n_visitados, nodo_inicial, N, co, ruta):
             fronteras.append(ar.nodo1)
     nodos_visitados.append(nodo_actual)
     while True:
-        # print(tree_node_number)
-        # print(str(co) + "Nodo actual: " + nodo_actual.nombre + " - NVisitados: ", end="")
-        # printList(nodos_visitados)
-        # print(" - Frontera: ", end="")
-        # printList(fronteras)
-        # print(" - Frontera V: ", end="")
-        # printList(froteras_visitadas)
-        # print("")
         if nodo_inicial in fronteras:
             fronteras.remove(nodo_inicial)
             if len(nodos_visitados) == N:
