@@ -93,6 +93,48 @@ def vegasTSP(nodo_actual, n_visitados, nodo_inicial, N, co, ruta):
             return solution
 
 
+def distancia(nodo_1, nodo_2):
+    for arista in nodo_1.aristas:
+        if arista.nodo2 == nodo_2:
+            return arista.costo
+
+
+def optimizacion2opt(graph):
+    cambio_min = 0
+    for i in range(len(graph)-2):
+        for j in range(i+2, len(graph)-1):
+            cambio=0
+            costo_actual = distancia(graph[i], graph[i+1])+distancia(graph[j], graph[j+1])
+
+            if distancia(graph[i], graph[j]) is not None and distancia(graph[i + 1], graph[j + 1]) is not None:
+                costo_nuevo = distancia(graph[i], graph[j])+distancia(graph[i+1], graph[j+1])
+                cambio = costo_nuevo - costo_actual
+
+            if cambio < cambio_min:
+                cambio_min = cambio
+                i_min = i
+                j_min = j
+    if cambio_min < 0:
+        graph[i_min+1:j_min+1]=graph[i_min+1:j_min+1][::-1]
+    return graph
+
+def optimizacion2optIterator(nodo_inicial, graph):
+    solucion = graph.copy()
+    solucion.append(nodo_inicial)
+    cambio = 1
+    c = 0
+    while cambio != 0:
+        c=c+1
+        costo_antes = calculateRouteCost(solucion)
+        solucion = optimizacion2opt(solucion)
+        costo_despues = calculateRouteCost(solucion)
+
+        cambio = costo_antes - costo_despues
+    print("Iteraciones "+str(c))
+    return solucion
+
+
+
 def generateGraph(size, aristas, max_cost):
     if size <= 0 or aristas > (((size * (size - 1)) / 2) - size):
         print("Cantidad de aristas no valido")
@@ -133,6 +175,20 @@ def generateGraph(size, aristas, max_cost):
     return nodos[0]
 
 
+def genereteGrafoConexo(size, max_cost):
+    nodos = []
+    for i in range(size):
+        nodos.append(nodo(str(i)))
+    for i in range(size):
+        for j in range(size):
+            costo = random.randint(1, max_cost)
+            if i != j:
+                if distancia(nodos[i], nodos[j]) is None:
+                    nodos[i].aristas.append(arista(nodos[i], nodos[j], costo))
+                    nodos[j].aristas.append(arista(nodos[j], nodos[i], costo))
+    return nodos[0]
+
+
 def printGraphMatrix(nodoInicial):
     visitedNodes = []
     n_queue = [nodoInicial]
@@ -154,25 +210,34 @@ def calculateRouteCost(camino):
         for arc in camino[i].aristas:
             if arc.nodo1 == camino[i] and arc.nodo2 == camino[i+1]:
                 costo += arc.costo
-    for arc in camino[len(camino)-1].aristas:
-        if arc.nodo1 == camino[len(camino)-1] and arc.nodo2 == camino[0]:
-            costo += arc.costo
+    # for arc in camino[len(camino)-1].aristas:
+    #     if arc.nodo1 == camino[len(camino)-1] and arc.nodo2 == camino[0]:
+    #         costo += arc.costo
     return costo
 
-# N = 20
-# nodo_inicial = generateGraph(N, 10)
-#
-# # print(printGraphMatrix(nodo_inicial))
-#
-# start = time.time()
-# contador = []
-# nodosCamin = []
-# datos = vegasTSP(nodo_inicial, [], nodo_inicial, N, contador, nodosCamin)
-# # print(len(contador))
-# # print(nodosCamin)
-# end = time.time()
-# print()
-# print(end - start)
+N = 20
+# nodo_inicial = generateGraph(N, 10, max_cost=10)
+nodo_inicial = genereteGrafoConexo(N, max_cost=10)
+# print(printGraphMatrix(nodo_inicial))
+
+start = time.time()
+contador = []
+nodosCamin = []
+datos = vegasTSP(nodo_inicial, [], nodo_inicial, N, contador, nodosCamin)
+datosv2 = datos.copy()
+printList(datosv2)
+print()
+print(calculateRouteCost(datosv2))
+datos = optimizacion2optIterator(nodo_inicial, datos)
+printList(datos)
+print()
+datos.pop(len(datos)-1)
+print(calculateRouteCost(datos))
+# print(len(contador))
+# print(nodosCamin)
+end = time.time()
+print()
+print(end - start)
 
 
 
