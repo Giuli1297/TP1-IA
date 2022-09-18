@@ -86,7 +86,7 @@ def vegasTSP(nodo_actual, n_visitados, nodo_inicial, N, co, ruta):
         fronterasv2 = [x for x in fronteras if x not in froteras_visitadas]
         if not fronterasv2:
             return []
-        target = fronterasv2[0]
+        target = random.choice(fronterasv2)
         froteras_visitadas.append(target)
         solution = vegasTSP(target, nodos_visitados, nodo_inicial, N, co, ruta)
         if solution:
@@ -211,13 +211,16 @@ start = time.time()
 contador = []
 nodosCamin = []
 datos = vegasTSP(nodo_inicial, [], nodo_inicial, N, contador, nodosCamin)
-
-datos = avaroTSP(nodo_inicial, [], nodo_inicial, N, contador, nodosCamin)
 # print(len(contador))
 # print(nodosCamin)
 end = time.time()
 print()
 print(end - start)
 
-
-
+start = time.time()
+contador = []
+nodosCamin = []
+datos = avaroTSP(nodo_inicial, [], nodo_inicial, N, contador, nodosCamin)
+end = time.time()
+print()
+print(end - start)
