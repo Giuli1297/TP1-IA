@@ -11,6 +11,7 @@ from algorithms.backtracking import tsp_backtracking
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your secret key'
 
+ALGORTHMS = {'backtracking': 'Backtracking', 'las_vegas': 'Las Vegas'}
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
@@ -32,7 +33,8 @@ def index():
             solucion = tsp_backtracking(getAdyacencyAsList(nodo_inicial))
             end = time.time()
             costoruta = solucion['costo']
-            contador = 10
+            contador = []
+            optimo = 'Si'
         elif algorithm == 'las_vegas':
             contador = []
             nodos_camino = []
@@ -40,10 +42,13 @@ def index():
             datos = vegasTSP(nodo_inicial, [], nodo_inicial, int(n_nodes), contador, nodos_camino)
             end = time.time()
             costoruta = calculateRouteCost(datos)
+            optimo = 'No'
         return render_template('index.html',
                                datos=[{"time": end-start,
                                       "cant_nodos_visitados": len(contador),
-                                       "costo_ruta": costoruta}])
+                                       "costo_ruta": costoruta,
+                                       "algoritmo": ALGORTHMS[algorithm],
+                                       "optimo": optimo}])
 
 
 class nodo:
@@ -221,9 +226,12 @@ def printGraphMatrix(nodoInicial):
 def getAdyacencyAsList(nodoInicial):
     matrix = printGraphMatrix(nodoInicial)
     matriz_adyacencia = []
+    index = 0
     for row in matrix.values():
-        transformed_row = map(lambda x: int(x), row)
-        matriz_adyacencia.append(list(transformed_row))
+        transformed_row = list(map(lambda x: int(x), row.values()))
+        transformed_row.insert(index, index)
+        matriz_adyacencia.append(transformed_row)
+        index += 1
     return matriz_adyacencia
 
 
