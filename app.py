@@ -6,29 +6,29 @@ import asyncio
 import sys, math
 from flask import Flask, render_template, request
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your secret key'
+# app = Flask(__name__)
+# app.config['SECRET_KEY'] = 'your secret key'
 
 
-@app.route('/', methods=('GET', 'POST'))
-def index():
-    if request.method == 'GET':
-        return render_template('index.html', time=False)
-    elif request.method == 'POST':
-        n_nodes = request.form['n_nodes']
-        n_arcs = request.form['n_arcs']
-        max_arc_cost  = request.form['max_arc_cost']
-        nodo_inicial = generateGraph(int(n_nodes), int(n_arcs), int(max_arc_cost))
-        contador = []
-        nodos_camino = []
-        start = time.time()
-        datos = vegasTSP(nodo_inicial, [], nodo_inicial, int(n_nodes), contador, nodos_camino)
-        end = time.time()
-        costoruta = calculateRouteCost(datos)
-        return render_template('index.html',
-                               datos=[{"time": end-start,
-                                      "cant_nodos_visitados": len(contador),
-                                       "costo_ruta": costoruta}])
+# @app.route('/', methods=('GET', 'POST'))
+# def index():
+#     if request.method == 'GET':
+#         return render_template('index.html', time=False)
+#     elif request.method == 'POST':
+#         n_nodes = request.form['n_nodes']
+#         n_arcs = request.form['n_arcs']
+#         max_arc_cost  = request.form['max_arc_cost']
+#         nodo_inicial = generateGraph(int(n_nodes), int(n_arcs), int(max_arc_cost))
+#         contador = []
+#         nodos_camino = []
+#         start = time.time()
+#         datos = vegasTSP(nodo_inicial, [], nodo_inicial, int(n_nodes), contador, nodos_camino)
+#         end = time.time()
+#         costoruta = calculateRouteCost(datos)
+#         return render_template('index.html',
+#                                datos=[{"time": end-start,
+#                                       "cant_nodos_visitados": len(contador),
+#                                        "costo_ruta": costoruta}])
 
 
 class nodo:
@@ -86,7 +86,7 @@ def vegasTSP(nodo_actual, n_visitados, nodo_inicial, N, co, ruta):
         fronterasv2 = [x for x in fronteras if x not in froteras_visitadas]
         if not fronterasv2:
             return []
-        target = random.choice(fronterasv2)
+        target = fronterasv2[0]
         froteras_visitadas.append(target)
         solution = vegasTSP(target, nodos_visitados, nodo_inicial, N, co, ruta)
         if solution:
@@ -130,6 +130,12 @@ def generateGraph(size, aristas, max_cost):
         nodos[n_gen1].aristas.append(arista(nodos[n_gen1], nodos[n_gen2], costo))
         nodos[n_gen2].aristas.append(arista(nodos[n_gen2], nodos[n_gen1], costo))
 
+    #ORDER ARISTAS
+    def getCostAndEntrophy(e):
+        return e.costo
+    for i in range(size):
+        nodos[i].aristas.sort(key=getCostAndEntrophy)     
+
     return nodos[0]
 
 
@@ -159,20 +165,20 @@ def calculateRouteCost(camino):
             costo += arc.costo
     return costo
 
-# N = 20
-# nodo_inicial = generateGraph(N, 10)
-#
-# # print(printGraphMatrix(nodo_inicial))
-#
-# start = time.time()
-# contador = []
-# nodosCamin = []
-# datos = vegasTSP(nodo_inicial, [], nodo_inicial, N, contador, nodosCamin)
-# # print(len(contador))
-# # print(nodosCamin)
-# end = time.time()
-# print()
-# print(end - start)
+N = 20
+nodo_inicial = generateGraph(N, 10, 5)
+
+# print(printGraphMatrix(nodo_inicial))
+
+start = time.time()
+contador = []
+nodosCamin = []
+datos = vegasTSP(nodo_inicial, [], nodo_inicial, N, contador, nodosCamin)
+# print(len(contador))
+# print(nodosCamin)
+end = time.time()
+print()
+print(end - start)
 
 
 
