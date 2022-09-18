@@ -1,44 +1,46 @@
 import random
 import time
 import sys
+import math
 
 import asyncio
-import sys, math
-from flask import Flask, render_template, request
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your secret key'
-
-
-@app.route('/', methods=('GET', 'POST'))
-def index():
-    if request.method == 'GET':
-        return render_template('index.html', time=False)
-    elif request.method == 'POST':
-        n_nodes = request.form['n_nodes']
-        n_arcs = request.form['n_arcs']
-        max_arc_cost  = request.form['max_arc_cost']
-        if n_arcs:
-            nodo_inicial = generateGraph(int(n_nodes), int(n_arcs), int(max_arc_cost))
-        else:
-            nodo_inicial = genereteGrafoConexo(int(n_nodes), int(max_arc_cost))
-        contador = []
-        nodos_camino = []
-        start = time.time()
-        datos = vegasTSP(nodo_inicial, [], nodo_inicial, int(n_nodes), contador, nodos_camino)
-        end = time.time()
-        costoruta = calculateRouteCost(datos)
-        return render_template('index.html',
-                               datos=[{"time": end-start,
-                                      "cant_nodos_visitados": len(contador),
-                                       "costo_ruta": costoruta}])
+# import sys, math
+# from flask import Flask, render_template, request
+#
+# app = Flask(__name__)
+# app.config['SECRET_KEY'] = 'your secret key'
+#
+#
+# @app.route('/', methods=('GET', 'POST'))
+# def index():
+#     if request.method == 'GET':
+#         return render_template('index.html', time=False)
+#     elif request.method == 'POST':
+#         n_nodes = request.form['n_nodes']
+#         n_arcs = request.form['n_arcs']
+#         max_arc_cost  = request.form['max_arc_cost']
+#         if n_arcs:
+#             nodo_inicial = generateGraph(int(n_nodes), int(n_arcs), int(max_arc_cost))
+#         else:
+#             nodo_inicial = genereteGrafoConexo(int(n_nodes), int(max_arc_cost))
+#         contador = []
+#         nodos_camino = []
+#         start = time.time()
+#         datos = vegasTSP(nodo_inicial, [], nodo_inicial, int(n_nodes), contador, nodos_camino)
+#         end = time.time()
+#         costoruta = calculateRouteCost(datos)
+#         return render_template('index.html',
+#                                datos=[{"time": end-start,
+#                                       "cant_nodos_visitados": len(contador),
+#                                        "costo_ruta": costoruta}])
 
 
 class nodo:
-    nombre, aristas = None, None
+    nombre, aristas, cord = None, None, None
 
     def __init__(self, nombre):
         self.nombre = nombre
+        self.cord = [random.randint(1, 1000), random.randint(1, 1000)]
         self.aristas = []
 
 
@@ -137,6 +139,9 @@ def optimizacion2optIterator(nodo_inicial, graph):
     return solucion
 
 
+def distanciaRecta(nodo_1, nodo_2):
+    return math.sqrt(((nodo_2.cord[0]-nodo_1.cord[0])**2)+((nodo_2.cord[1]-nodo_1.cord[1])**2))
+
 
 def generateGraph(size, aristas, max_cost):
     if size <= 0 or aristas > (((size * (size - 1)) / 2) - size):
@@ -146,7 +151,7 @@ def generateGraph(size, aristas, max_cost):
     for i in range(size):
         nodos.append(nodo(str(i)))
     for i in range(size):
-        costo = random.randint(1, max_cost)
+        costo = random.randint(int(distanciaRecta(nodos[0], nodos[i])), int(distanciaRecta(nodos[0], nodos[i])+max_cost))
         if i == 0:
             nodos[i].aristas.append(arista(nodos[i], nodos[1], costo))
             nodos[i].aristas.append(arista(nodos[i], nodos[size - 1], costo))
@@ -158,7 +163,7 @@ def generateGraph(size, aristas, max_cost):
             nodos[i].aristas.append(arista(nodos[i], nodos[i - 1], costo))
 
     for i in range(aristas):
-        costo = random.randint(1, max_cost)
+        costo = random.randint(int(distanciaRecta(nodos[0], nodos[i])), int(distanciaRecta(nodos[0], nodos[i])+max_cost))
         n_gen1 = random.randint(0, size - 1)
         n_gen2 = random.randint(0, size - 1)
         rtry = False
@@ -184,7 +189,7 @@ def genereteGrafoConexo(size, max_cost):
         nodos.append(nodo(str(i)))
     for i in range(size):
         for j in range(size):
-            costo = random.randint(1, max_cost)
+            costo = random.randint(int(distanciaRecta(nodos[0], nodos[i])), int(distanciaRecta(nodos[0], nodos[i])+max_cost))
             if i != j:
                 if distancia(nodos[i], nodos[j]) is None:
                     nodos[i].aristas.append(arista(nodos[i], nodos[j], costo))
@@ -218,10 +223,10 @@ def calculateRouteCost(camino):
     #         costo += arc.costo
     return costo
 
-# N = 20
-# nodo_inicial = generateGraph(N, 10, max_cost=10)
-# # nodo_inicial = genereteGrafoConexo(N, max_cost=10)
-# print(printGraphMatrix(nodo_inicial))
+N = 20
+nodo_inicial = generateGraph(N, 10, max_cost=10)
+# nodo_inicial = genereteGrafoConexo(N, max_cost=10)
+print(printGraphMatrix(nodo_inicial))
 
 # start = time.time()
 # contador = []
