@@ -26,6 +26,10 @@ def index():
         n_arcs = request.form['n_arcs']
         max_arc_cost  = request.form['max_arc_cost']
 
+        if n_nodes == '' or max_arc_cost == '':
+            return render_template('index.html',
+                                   message={"NoData": "Argumentos Incompletos"})
+
         if n_arcs:
             nodo_inicial = generateGraph(int(n_nodes), int(n_arcs), int(max_arc_cost))
         else:
@@ -143,7 +147,7 @@ def index():
                                           {"time": tiempoAvaro2otp,
                                            "cant_nodos_visitados": len(contadorAvaro2otp),
                                            "costo_ruta": costorutaAvaro2otp,
-                                           "algoritmo": "Avaro2otp",
+                                           "algoritmo": "Avaro + 2otp",
                                            "optimo": "Si" if costorutaBT == costorutaAvaro2otp else "No"}
                                           ])
 

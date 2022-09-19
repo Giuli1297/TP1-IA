@@ -2,7 +2,7 @@
 
 {% block content %}
     <h1>{% block title %} Tarea 1 - IA {% endblock %}</h1>
-    <div class="row">
+    <div class="row mt-10">
         <div class="col-md-2">
             <form method="post">
                 <div class="form-group">
@@ -66,6 +66,11 @@
                   {% endfor %}
                   </tbody>
                 </table>
+            {% endif %}
+            {% if message %}
+                <div class="h2">
+                    "Argumentos Incompletos"
+                </div>
             {% endif %}
         </div>
     </div>
