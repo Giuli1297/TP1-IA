@@ -84,7 +84,7 @@ def index():
                                    datos=[{"time": tiempoAvaro2otp,
                                            "cant_nodos_visitados": len(contadorAvaro2otp),
                                            "costo_ruta": costorutaAvaro2otp,
-                                           "algoritmo": "Avaro"}])
+                                           "algoritmo": "Avaro + 2Opt"}])
 
         elif algorithm == "todos":
             costoruta = 0
@@ -382,42 +382,3 @@ N = 20
 nodo_inicial = generateGraph(N, 10, max_cost=10)
 # nodo_inicial = genereteGrafoConexo(N, max_cost=10)
 print(printGraphMatrix(nodo_inicial))
-
-# start = time.time()
-# contador = []
-# nodosCamin = []
-# datos = vegasTSP(nodo_inicial, [], nodo_inicial, N, contador, nodosCamin)
-# datosv2 = datos.copy()
-# printList(datosv2)
-# print()
-# print(calculateRouteCost(datosv2))
-# datos = optimizacion2optIterator(nodo_inicial, datos)
-# printList(datos)
-# print()
-# datos.pop(len(datos)-1)
-# print(calculateRouteCost(datos))
-# # print(len(contador))
-# # print(nodosCamin)
-# end = time.time()
-# print()
-# print(end - start)
-
-# print(printGraphMatrix(nodo_inicial))
-
-# start = time.time()
-# contador = []
-# nodosCamin = []
-# datos = vegasTSP(nodo_inicial, [], nodo_inicial, N, contador, nodosCamin)
-# # print(len(contador))
-# # print(nodosCamin)
-# end = time.time()
-# print()
-# print(end - start)
-#
-# start = time.time()
-# contador = []
-# nodosCamin = []
-# datos = avaroTSP(nodo_inicial, [], nodo_inicial, N, contador, nodosCamin)
-# end = time.time()
-# print()
-# print(end - start)
