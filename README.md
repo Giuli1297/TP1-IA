@@ -1,5 +1,10 @@
 # TP1-IA
 # Tarea 1 - Busquedas
+## Integrantes del Grupo
+1-Matias Ramirez
+2-Raul Galvan
+3-Cesar Gonzalez
+4-Ricardo Gaona
 
 ## Descripcion
 
